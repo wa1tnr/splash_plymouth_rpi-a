@@ -1,0 +1,151 @@
+screen_width = Window.GetWidth();
+screen_height = Window.GetHeight();
+
+warning_image = Image.Text ("73", 0.2, 0.8, 0.8, 0.8, "Sans 36");
+
+theme_image = Image("splash.png");
+// theme_bye_image = Image("splash_bye.png");
+theme_shutdown_image = Image("splash_shutdown.png");
+
+image_width = theme_image.GetWidth();
+image_height = theme_image.GetHeight();
+
+scale_x = image_width / screen_width;
+scale_y = image_height / screen_height;
+
+flag = 1;
+
+if (scale_x > 1 || scale_y > 1)
+{
+	if (scale_x > scale_y)
+	{
+		resized_image = theme_image.Scale (screen_width, image_height / scale_x);
+		// resized_bye_image = theme_bye_image.Scale (screen_width, image_height / scale_x);
+		resized_shutdown_image = theme_shutdown_image.Scale (screen_width, image_height / scale_x);
+		image_x = 0;
+		image_y = (screen_height - ((image_height  * screen_width) / image_width)) / 2;
+	}
+	else
+	{
+		resized_image = theme_image.Scale (image_width / scale_y, screen_height);
+		// resized_bye_image = theme_bye_image.Scale (image_width / scale_y, screen_height);
+		resized_shutdown_image = theme_shutdown_image.Scale (image_width / scale_y, screen_height);
+		image_x = (screen_width - ((image_width  * screen_height) / image_height)) / 2;
+		image_y = 0;
+	}
+}
+else
+{
+	resized_image = theme_image.Scale (image_width, image_height);
+	// resized_bye_image = theme_bye_image.Scale (image_width, image_height);
+	resized_shutdown_image = theme_shutdown_image.Scale (image_width, image_height);
+	image_x = (screen_width - image_width) / 2;
+	image_y = (screen_height - image_height) / 2;
+}
+
+
+
+
+
+
+//  if (Plymouth.GetMode() == "squanto") {
+//	      bye_sprite = Sprite (resized_bye_image);
+//              bye_sprite.SetPosition (image_x, image_y, -100);
+//  }
+
+
+  if (Plymouth.GetMode() == "boot") {
+	resized_sprite = Sprite (resized_image);
+	resized_sprite.SetPosition (image_x, image_y, -100);
+  } else {
+
+        if (Plymouth.GetMode() == "shutdown")
+        {
+	      shutdown_sprite = Sprite (resized_shutdown_image);
+              shutdown_sprite.SetPosition (image_x, image_y, -100);
+        } else {
+
+              warning_sprite = Sprite (warning_image);
+              warning_sprite.SetPosition (200, 300, -100);
+        }
+  }
+
+
+#------------------------------- Animation -----------------------------------------
+progress = 0;
+fun refresh_callback ()
+{
+    progress++;
+
+    # update 50/3 times per second
+    if (progress % 3 == 0) {
+
+
+
+// if (Plymouth.GetMode() == "squanto") {
+//	      bye_sprite = Sprite (resized_bye_image);
+//              bye_sprite.SetPosition (image_x, image_y, -100);
+// }
+
+
+
+
+
+          if (Plymouth.GetMode() == "boot") {
+                resized_sprite = Sprite (resized_image);
+                resized_sprite.SetPosition (image_x, image_y, -100);
+          } else {
+                if (Plymouth.GetMode() == "shutdown")
+                {
+	              shutdown_sprite = Sprite (resized_shutdown_image);
+                      shutdown_sprite.SetPosition (image_x, image_y, -100);
+                } else {
+                    warning_sprite = Sprite (warning_image);
+                    warning_sprite.SetPosition (200, 300, -100);
+                }
+          } 
+    }
+  
+}
+Plymouth.SetRefreshFunction (refresh_callback);
+
+
+message_sprite = Sprite();
+message_sprite.SetPosition(screen_width * 0.63, screen_height * 0.96, 10000);
+
+# --- 0.4 0.2 0 0.4 -- nice dim    yellow
+# --- 0.5 0.3 0 0.4 -- nice dim+   yellow
+
+fun message_callback (text) {
+	my_image = Image.Text(text, 0, 0.3, 0.3, 0.5, "Sans 15");
+	message_sprite.SetImage(my_image);
+	sprite.SetImage (resized_image);
+}
+
+Plymouth.SetUpdateStatusFunction(message_callback);
+
+
+
+
+
+
+//   ////////////////////////////////////////
+//   ////////  factory code /////////////////
+//   ////////////////////////////////////////
+
+// if (Plymouth.GetMode() != "shutdown")
+// {
+// 	sprite = Sprite (resized_image);
+// 	sprite.SetPosition (image_x, image_y, -100);
+// }
+
+// message_sprite = Sprite();
+// message_sprite.SetPosition(screen_width * 0.1, screen_height * 0.9, 10000);
+
+// fun message_callback (text) {
+// 	my_image = Image.Text(text, 1, 1, 1);
+// 	message_sprite.SetImage(my_image);
+// 	sprite.SetImage (resized_image);
+// }
+
+// Plymouth.SetUpdateStatusFunction(message_callback);
