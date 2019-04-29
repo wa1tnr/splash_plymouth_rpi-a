@@ -1,0 +1,19 @@
+[Unit]
+Description=Show Plymouth Power Off Screen
+After=getty@tty1.service display-manager.service plymouth-start.service
+Before=systemd-poweroff.service
+DefaultDependencies=no
+ConditionKernelCommandLine=!plymouth.enable=0
+ConditionKernelCommandLine=!nosplash
+
+[Service]
+ExecStart=/bin/sh -c \
+  '/bin/cat /usr/share/plymouth/themes/pix/splash_halt.png > \
+            /usr/share/plymouth/themes/pix/splash_shutdown.png && \
+            /sbin/plymouthd --mode=shutdown --attach-to-session && \
+            /bin/plymouth show-splash && \
+            /bin/sleep 202 ; \
+            /bin/echo "4447-202sec" > \
+            /home/mylogin/abcdfpg.txt'
+ExecStartPost=-/bin/plymouth show-splash
+Type=forking
