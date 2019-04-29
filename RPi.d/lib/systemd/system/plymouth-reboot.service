@@ -1,0 +1,19 @@
+[Unit]
+Description=Show Plymouth Reboot Screen
+After=getty@tty1.service display-manager.service plymouth-start.service
+Before=systemd-reboot.service
+DefaultDependencies=no
+ConditionKernelCommandLine=!plymouth.enable=0
+ConditionKernelCommandLine=!nosplash
+
+[Service]
+ExecStart=/bin/sh -c \
+  '/bin/cat /usr/share/plymouth/themes/pix/splash_reboot.png > \
+            /usr/share/plymouth/themes/pix/splash_shutdown.png && \
+            /sbin/plymouthd --mode=shutdown --attach-to-session && \
+            /bin/plymouth show-splash && \
+            /bin/sleep 11 ; \
+            /bin/echo 4443 > \
+            /home/mylogin/abjpvd.txt'
+ExecStartPost=-/bin/plymouth show-splash
+Type=forking
